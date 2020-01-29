@@ -32,16 +32,18 @@ public class CloudTenant implements Runnable{
         while(true){
             try{
                 int numBytesRead = connection.getInputStream().read(buffer);
+                //System.out.println("Num byte received: "+numBytesRead);
                 DatagramPacket pack = new DatagramPacket(buffer, numBytesRead);
                 if(id%2==0){
                     pack.setAddress(InetAddress.getByName(refHandler.worker_ip0));
-                    pack.setPort(80);
+                    pack.setPort(100);
                 }
                 else{
                     pack.setAddress(InetAddress.getByName(refHandler.worker_ip1));
-                    pack.setPort(80);
+                    pack.setPort(100);
                 }
                 refHandler.cloudWorker.send(pack);
+                Thread.sleep(1);
             }catch(Exception e){
                 System.out.println("Exception while reading data from cloudConnection");
                 e.printStackTrace();

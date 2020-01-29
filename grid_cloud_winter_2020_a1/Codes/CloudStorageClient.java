@@ -9,6 +9,7 @@ public class CloudStorageClient implements Runnable{
     public CloudStorageClient(String _cloud_ip, int _port){
         cloud_ip = _cloud_ip;
         port = _port;
+        start();
     }
 
     public void start(){
@@ -26,28 +27,46 @@ public class CloudStorageClient implements Runnable{
 
     @Override
     public void run() {
-        BufferedReader br = new BufferedReader(new FileReader("output.txt"));
+        BufferedReader br = null;
+        try{
+            br = new BufferedReader(new FileReader("output.txt"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         String line=null;
         int index = 0;
-        while( (line=br.readLine()) != null) {
-            byte []buffer = line.getBytes();
+
+        try{
+            line = br.readLine();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        while( line != null) {
+            
             
             try{
+                byte []buffer = line.getBytes("UTF-8");
                 connection.getOutputStream().write(buffer);
                 connection.getOutputStream().flush();
                 index++;
-                System.out.println("Uploaded chunk index: "+index);
-                Thread.sleep(250);
+                //System.out.println("Uploaded chunk index: "+index);
+                line = br.readLine();
+                Thread.sleep(1);
             }catch(Exception e){
                 e.printStackTrace();
             }
+
         }
-        br.close();
+        try{
+            br.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         System.out.println("File upload complete.");
 
         String end= "END";
         try{
-            connection.getOutputStream().write(end.getBytes());
+            connection.getOutputStream().write(end.getBytes("UTF-8"));
             connection.getOutputStream().flush();
             System.out.println("Killing the Thread.");
         }catch(Exception e){

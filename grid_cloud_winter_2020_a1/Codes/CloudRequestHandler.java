@@ -62,11 +62,11 @@ public class CloudRequestHandler implements Runnable{
                 CloudClient newClient = new CloudClient(clientCount, incomingCloudTaskRequestSocket);
                 clientCount++;
                 incomingTaskConnectionsList.add(newClient);
-
+                System.out.println("Received a connection request and processing now");
                 // A new CloudTenant is created as soon as a new Cloud Request comes from a new connection
 
                 CloudTenant tempTenant = new CloudTenant(this, newClient.getIncomingConnection(), newClient.getId());
-                
+                Thread.sleep(1);
                 // CloudTenant creation ends.  
             }catch(Exception e){
                 System.out.println("Socket connection receive exception.");
